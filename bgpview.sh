@@ -88,6 +88,6 @@ case "$1" in
         echo "${BOLD} -u ${NORM} show upstream peers"
         echo ""
         ;;
-    *) ./bgpview.sh -h 
+    *) bgpview.sh -h 
 
   esac
