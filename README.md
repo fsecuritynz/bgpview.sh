@@ -8,14 +8,26 @@ Leverage bgpview.io in the CLI via API to view BGP information
 - bash
 - jq
 - curl
+- sed
+- awk
 
+## Network Requirements
+- dns & internet connectivity (https tcp/443)
 
 # Usage
 Show downstream peers
-- -d downstreams
+-d 
 
-Show upstream peers
-- -u upstreams
+Show ip address infor
+-i 
+
+Show my ip address info
+- m 
 
 Show prefixes
-- -p prefixes
+- -p 
+
+Show upstream peers
+-u 
+
+
