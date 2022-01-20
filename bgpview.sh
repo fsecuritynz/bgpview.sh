@@ -101,7 +101,6 @@ case "$1" in
         echo "######################################"
         echo "Reference ASN: $asn"
         echo ""
-        read -p "Enter an ASN: " asn
         echo "${BOLD}Prefix${NORM}"
         curl -s https://api.bgpview.io/asn/$asn/prefixes | jq ".data.ipv4_prefixes[] | .prefix" | sed -e 's/^"//' -e 's/"$//' 
         echo ""
