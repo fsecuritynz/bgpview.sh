@@ -96,6 +96,7 @@ case "$1" in
         ;;
 
     -p) 
+    	asn=$OPTARG
         echo ""
         echo "######################################"
         echo "Reference ASN: $asn"
