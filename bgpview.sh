@@ -2,7 +2,7 @@
 
 #
 # NAME: bgpview.sh
-# VERSION: v0.3
+# VERSION: v0.4
 # AUTHOR: sam hill
 #
 
@@ -48,7 +48,7 @@ fi
 # SCRIPT
 #
 
-while getopts d:i:m:u:h:p: options; do
+while getopts :d:i:u:p: options; do
 case "$1" in
 
     -d)
@@ -106,6 +106,17 @@ case "$1" in
         echo ""
         ;;
 
+     -m)
+        myipaddress=$(curl -s ifconfig.co)
+        echo "######################################"
+        echo "Reference IP Address: $ipaddress"
+        echo ""
+        echo "${BOLD}Organization, Prefix, Country, ASN${NORM}"
+	curl -s https://api.bgpview.io/ip/$myipaddress | jq '.data.prefixes[] | "\(.asn.name) \(.prefix) \(.asn.country_code) \(.asn.asn)"' | sed -e 's/^"//' -e 's/"$//' | awk {'print $1 "," $2 "," $3 "," $4'}
+        echo "######################################"
+        echo ""
+        ;;
+
     -h) 
         echo "${BOLD} bgpview.sh usage: ${NORM}"
         echo "${BOLD} -d <<asn>> : ${NORM} show downstream peers"
@@ -115,7 +126,12 @@ case "$1" in
         echo "${BOLD} -u <<asn>> : ${NORM} show upstream peers"
         echo ""
         ;;
-    *) bgpview.sh -h 
 
+    -*) echo "${BOLD}ERROR: Unrecognized command${NORM}" >&2
+	exit 2
+	;;
+
+    *) bgpview.sh -h 
+	;;
   esac
 done
