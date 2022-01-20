@@ -52,7 +52,6 @@ while getopts d:i:m:u:h: options; do
 case "$1" in
 
     -d)
-#        read -p "Enter an ASN: " asn
 	asn=$OPTARG
         echo ""
         echo "######################################"
@@ -64,7 +63,6 @@ case "$1" in
         echo ""
         ;;
     -i)
-#        read -p "Enter an IP: " ipaddress
         ipaddress=$OPTARG
         echo ""
         echo "######################################"
@@ -86,7 +84,6 @@ case "$1" in
         echo ""
         ;;
     -u) 
-#        read -p "Enter an ASN: " asn
         asn=$OPTARG
         echo ""
         echo "######################################"
