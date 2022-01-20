@@ -48,7 +48,7 @@ fi
 # SCRIPT
 #
 
-while getopts d:i:m:u:h: options; do
+while getopts d:i:m:u:h:p: options; do
 case "$1" in
 
     -d)
