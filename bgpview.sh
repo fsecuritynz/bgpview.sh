@@ -103,6 +103,7 @@ case "$1" in
         echo ""
         echo "${BOLD}Prefix${NORM}"
         curl -s https://api.bgpview.io/asn/$asn/prefixes | jq ".data.ipv4_prefixes[] | .prefix" | sed -e 's/^"//' -e 's/"$//' 
+	echo "######################################"
         echo ""
         ;;
 
