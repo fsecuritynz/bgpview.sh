@@ -2,7 +2,7 @@
 
 #
 # NAME: bgpview.sh
-# VERSION: v0.2
+# VERSION: v0.3
 # AUTHOR: sam hill
 #
 
@@ -14,18 +14,46 @@
 # -u upstreams
 
 
-
-BOLD=$(tput bold)
+#
+# SETUP TEXT BOLD
+#
+BOLD=$(tput bold | tput setb 0 | tput setaf 7)
 NORM=$(tput sgr0)
 
 
+#
+# SOFTWARE CHECK
+#
+if ! [ -x "$(command -v sed)" ]; then
+	echo -e "\e[1;33;4;44m${BOLD}ERROR:\e[0m${NORM} \e[1;33;4;44mThe utility ${BOLD}sed${NORM} is not installed\e[0m" >&2
+	exit 1
+fi
+if ! [ -x "$(command -v awk)" ]; then
+        echo "${BOLD}ERROR:${NORM} The utility ${BOLD}awk${NORM} is not installed" >&2
+        exit 1
+fi
+if ! [ -x "$(command -v jq)" ]; then
+        echo "${BOLD}ERROR:${NORM} The utility ${BOLD}jq${NORM} is not installed" >&2
+        exit 1
+fi
+if ! [ -x "$(command -v curl)" ]; then
+        echo "${BOLD}ERROR:${NORM} The utility ${BOLD}curl${NORM} is not installed" >&2
+        exit 1
+fi
 
 
 
+
+#
+# SCRIPT
+#
+
+while getopts d:i:m:u:h: options; do
 case "$1" in
 
     -d)
-        read -p "Enter an ASN: " asn
+#        read -p "Enter an ASN: " asn
+	asn=$OPTARG
         echo ""
         echo "######################################"
         echo "Reference ASN: $asn"
@@ -36,7 +64,8 @@ case "$1" in
         echo ""
         ;;
     -i)
-        read -p "Enter an IP: " ipaddress
+#        read -p "Enter an IP: " ipaddress
+        ipaddress=$OPTARG
         echo ""
         echo "######################################"
         echo "Reference IP Address: $ipaddress"
@@ -57,7 +86,8 @@ case "$1" in
         echo ""
         ;;
     -u) 
-        read -p "Enter an ASN: " asn
+#        read -p "Enter an ASN: " asn
+        asn=$OPTARG
         echo ""
         echo "######################################"
         echo "Reference ASN: $asn"
@@ -81,13 +111,14 @@ case "$1" in
 
     -h) 
         echo "${BOLD} bgpview.sh usage: ${NORM}"
-        echo "${BOLD} -d ${NORM} show downstream peers"
-        echo "${BOLD} -i ${NORM} show ip information" 
-        echo "${BOLD} -m ${NORM} show my ip information" 
-        echo "${BOLD} -p ${NORM} show prefixes" 
-        echo "${BOLD} -u ${NORM} show upstream peers"
+        echo "${BOLD} -d <<asn>> : ${NORM} show downstream peers"
+        echo "${BOLD} -i <<ip-address>> : ${NORM} show ip information" 
+        echo "${BOLD} -m ${NORM} : show my ip information" 
+        echo "${BOLD} -p <<asn>> : ${NORM} show prefixes" 
+        echo "${BOLD} -u <<asn>> : ${NORM} show upstream peers"
         echo ""
         ;;
     *) bgpview.sh -h 
 
   esac
+done
