@@ -5,6 +5,9 @@ Leverage bgpview.io in the CLI via API to view BGP information
 
 
 # Requirements
+- A UNIX environment (e.g. Linux, BSD, MacOS, or Windows Subsystem for Linux)
+
+
 - bash
 - jq
 - curl
