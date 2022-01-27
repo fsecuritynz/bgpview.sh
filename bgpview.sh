@@ -2,7 +2,7 @@
 
 #
 # NAME: bgpview.sh
-# VERSION: v0.5
+# VERSION: 0.5
 # AUTHOR: sam hill
 #
 
