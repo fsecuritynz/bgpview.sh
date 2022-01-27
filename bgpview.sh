@@ -2,7 +2,7 @@
 
 #
 # NAME: bgpview.sh
-# VERSION: v0.4
+# VERSION: v0.5
 # AUTHOR: sam hill
 #
 
@@ -12,7 +12,7 @@
 # -m my ipaddress
 # -p prefixes
 # -u upstreams
-
+# -x internet exchange/s
 
 #
 # SETUP TEXT BOLD
@@ -48,7 +48,7 @@ fi
 # SCRIPT
 #
 
-while getopts :d:i:u:p: options; do
+while getopts :d:i:u:p:x: options; do
 case "$1" in
 
     -d)
@@ -83,7 +83,7 @@ case "$1" in
         echo "######################################"
         echo ""
         ;;
-    -u) 
+    -u)
         asn=$OPTARG
         echo ""
         echo "######################################"
@@ -95,15 +95,27 @@ case "$1" in
         echo ""
         ;;
 
-    -p) 
+    -p)
     	asn=$OPTARG
         echo ""
         echo "######################################"
         echo "Reference ASN: $asn"
         echo ""
         echo "${BOLD}Prefix${NORM}"
-        curl -s https://api.bgpview.io/asn/$asn/prefixes | jq ".data.ipv4_prefixes[] | .prefix" | sed -e 's/^"//' -e 's/"$//' 
+        curl -s https://api.bgpview.io/asn/$asn/prefixes | jq ".data.ipv4_prefixes[] | .prefix" | sed -e 's/^"//' -e 's/"$//'
 	echo "######################################"
+        echo ""
+        ;;
+
+    -x)
+        asn=$OPTARG
+        echo ""
+        echo "######################################"
+        echo "Reference ASN: $asn"
+        echo ""
+        echo "${BOLD}IX Name${NORM}"
+	curl -s https://api.bgpview.io/asn/$asn/ixs | jq ".data[] | .name_full"  | sed -e 's/^"//' -e 's/"$//'
+        echo "######################################"
         echo ""
         ;;
 
@@ -118,13 +130,14 @@ case "$1" in
         echo ""
         ;;
 
-    -h) 
+    -h)
         echo "${BOLD} bgpview.sh usage: ${NORM}"
         echo "${BOLD} -d <<asn>> : ${NORM} show downstream peers"
         echo "${BOLD} -i <<ip-address>> : ${NORM} show ip information" 
         echo "${BOLD} -m ${NORM} : show my ip information" 
         echo "${BOLD} -p <<asn>> : ${NORM} show prefixes" 
         echo "${BOLD} -u <<asn>> : ${NORM} show upstream peers"
+        echo "${BOLD} -x <<asn>> : ${NORM} show internet exchange presence"
         echo ""
         ;;
 
