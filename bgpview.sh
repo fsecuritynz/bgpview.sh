@@ -2,7 +2,7 @@
 
 #
 # NAME: bgpview.sh
-# VERSION: 2
+# VERSION: 3
 # AUTHOR: sam hill
 #
 
@@ -114,7 +114,7 @@ case "$1" in
         echo "Reference ASN: $asn"
         echo ""
         echo "${BOLD}IX Name${NORM}"
-	curl -s https://api.bgpview.io/asn/$asn/ixs | jq ".data[] | .name_full"  | sed -e 's/^"//' -e 's/"$//'
+	curl -s https://api.bgpview.io/asn/$asn/ixs | jq ".data[] | .name_full"  | sed -e 's/^"//' -e 's/"$//' | sort
         echo "######################################"
         echo ""
         ;;
