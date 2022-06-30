@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 # NAME: bgpview.sh
 # VERSION: 3
@@ -10,6 +9,7 @@
 # -d downstreams
 # -i ipaddress
 # -m my ipaddress
+# -o organization/owner
 # -p prefixes
 # -u upstreams
 # -x internet exchange/s
@@ -48,7 +48,7 @@ fi
 # SCRIPT
 #
 
-while getopts :d:i:u:p:x: options; do
+while getopts :d:i:m:o:p:u:x: options; do
 case "$1" in
 
     -d)
@@ -62,6 +62,7 @@ case "$1" in
         echo "######################################"
         echo ""
         ;;
+        
     -i)
         ipaddress=$OPTARG
         echo ""
@@ -73,6 +74,7 @@ case "$1" in
         echo "######################################"
         echo ""
         ;;
+        
     -m)
         myipaddress=$(curl -s ifconfig.co)
         echo "######################################"
@@ -83,6 +85,32 @@ case "$1" in
         echo "######################################"
         echo ""
         ;;
+        
+    -o)
+        asn=$OPTARG
+        echo ""
+        echo "######################################"
+        echo "Organization ASN: $asn"
+        echo ""
+        echo "${BOLD}ASN, Organization${NORM}"
+	op=$(echo "$asn," && curl -s https://api.bgpview.io/asn/$asn |  jq '.data.description_full[]' | sed -e 's/^"//' -e 's/"$//' |  xargs)
+	echo "$op" | xargs
+        echo "######################################"
+        echo ""
+        ;;
+        
+     -p)
+    	asn=$OPTARG
+        echo ""
+        echo "######################################"
+        echo "Reference ASN: $asn"
+        echo ""
+        echo "${BOLD}Prefix${NORM}"
+        curl -s https://api.bgpview.io/asn/$asn/prefixes | jq ".data.ipv4_prefixes[] | .prefix" | sed -e 's/^"//' -e 's/"$//'
+		echo "######################################"
+        echo ""
+        ;;
+        
     -u)
         asn=$OPTARG
         echo ""
@@ -95,18 +123,6 @@ case "$1" in
         echo ""
         ;;
 
-    -p)
-    	asn=$OPTARG
-        echo ""
-        echo "######################################"
-        echo "Reference ASN: $asn"
-        echo ""
-        echo "${BOLD}Prefix${NORM}"
-        curl -s https://api.bgpview.io/asn/$asn/prefixes | jq ".data.ipv4_prefixes[] | .prefix" | sed -e 's/^"//' -e 's/"$//'
-	echo "######################################"
-        echo ""
-        ;;
-
     -x)
         asn=$OPTARG
         echo ""
@@ -114,28 +130,20 @@ case "$1" in
         echo "Reference ASN: $asn"
         echo ""
         echo "${BOLD}IX Name${NORM}"
-	curl -s https://api.bgpview.io/asn/$asn/ixs | jq ".data[] | .name_full"  | sed -e 's/^"//' -e 's/"$//' | sort
+		curl -s https://api.bgpview.io/asn/$asn/ixs | jq ".data[] | .name_full"  | sed -e 's/^"//' -e 's/"$//' | sort
         echo "######################################"
         echo ""
         ;;
 
-     -m)
-        myipaddress=$(curl -s ifconfig.co)
-        echo "######################################"
-        echo "Reference IP Address: $ipaddress"
-        echo ""
-        echo "${BOLD}Organization, Prefix, Country, ASN${NORM}"
-	curl -s https://api.bgpview.io/ip/$myipaddress | jq '.data.prefixes[] | "\(.asn.name) \(.prefix) \(.asn.country_code) \(.asn.asn)"' | sed -e 's/^"//' -e 's/"$//' | awk {'print $1 "," $2 "," $3 "," $4'}
-        echo "######################################"
-        echo ""
-        ;;
+
 
     -h)
         echo "${BOLD} bgpview.sh usage: ${NORM}"
         echo "${BOLD} -d <<asn>> : ${NORM} show downstream peers"
-        echo "${BOLD} -i <<ip-address>> : ${NORM} show ip information" 
-        echo "${BOLD} -m ${NORM} : show my ip information" 
-        echo "${BOLD} -p <<asn>> : ${NORM} show prefixes" 
+        echo "${BOLD} -i <<ip-address>> : ${NORM} show ip information"
+        echo "${BOLD} -m ${NORM} : show my ip information"
+        echo "${BOLD} -o <<asn>> : show my asn organization"
+        echo "${BOLD} -p <<asn>> : ${NORM} show prefixes"
         echo "${BOLD} -u <<asn>> : ${NORM} show upstream peers"
         echo "${BOLD} -x <<asn>> : ${NORM} show internet exchange presence"
         echo ""
@@ -145,7 +153,7 @@ case "$1" in
 	exit 2
 	;;
 
-    *) bgpview.sh -h 
+    *) bgpview.sh -h
 	;;
   esac
 done
